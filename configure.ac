@@ -1,5 +1,5 @@
 #AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS], [TAR-NAME], [URL])
-AC_INIT([foo], [0.0.1], [foo@gmail.com], [foo], [http://www.example.com])
+AC_INIT([audiowav], [0.0.1], [curtissand@gmail.com], [audiowav], [http://www.curtissand.com])
 
 # Force autoconf to be at least this version number.
 AC_PREREQ([2.68])
@@ -33,4 +33,3 @@ AC_PROG_CXX
 
 # Last line: actually generate all required output files.
 AC_OUTPUT
-

@@ -6,18 +6,19 @@ AM_CPPFLAGS = -I$(top_srcdir)/src
 # fact, in non-recursive structures, this is the only Makefile.am that is
 # needed. The programs (just foo.exe in this case) will be left in the top-level
 # directory.
-bin_PROGRAMS = foo
+bin_PROGRAMS = audiowav
 
-foo_SOURCES = \
+audiowav_SOURCES = \
   src/main.cpp \
-  src/foo.hpp
+  src/wavegen.hpp \
+	src/wavegen.cpp
 
 # To specify extra flags for each target you can do this.
 # But it is better to pass them on the command line (using a custom script to
 # make the process easier; see the example in the debug folder). Doing it that
 # way ensures the core build system stays free of cruft that may not port to
 # other machines or compilers.
-#foo_CXXFLAGS = -pedantic
+#audiowav_CXXFLAGS = -pedantic
 
 
 
@@ -37,5 +38,3 @@ tests_passing_LDADD =  $(TEST_LIBS)
 tests_failing_SOURCES = tests/failing_test.cpp
 tests_failing_CPPFLAGS = $(TEST_FLAGS)
 tests_failing_LDADD = $(TEST_LIBS)
-
-
