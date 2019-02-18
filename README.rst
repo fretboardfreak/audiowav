@@ -14,7 +14,7 @@ Tests
 
 See https://github.com/PhilipDaniels/autotools-template for more info.
 
-This project uses `https://code.google.com/p/googletest/ <Google Test>`_ for
+This project uses `Google Test <https://code.google.com/p/googletest/>`_ for
 testing. The source code for Google Test is included (it is only about 4Mb) but
 it is not compiled. So your first step is to compile it. There are instructions
 on the website, but for POSIXy systems the following should suffice::
