@@ -1,3 +1,19 @@
+========
+Audiowav
+========
+
+Author: Curtis Sand
+Repository: https://bitbucket.org/fret/audiowav.git
+
+Audiowav is a C++ project for exploring and experimenting with digital audio
+formats, signal generation, and analysis.
+
+
+Tests
+=====
+
+See `https://github.com/PhilipDaniels/autotools-template`_ for more info.
+
 This project uses [Google Test](https://code.google.com/p/googletest/) for
 testing. The source code for Google Test is included (it is only about 4Mb) but
 it is not compiled. So your first step is to compile it. There are instructions
@@ -19,4 +35,3 @@ one test executable - this speeds up both compilation and test run time.
 It is advised that you only build the tests from the debug folder using the
 debugconfigure script - this will avoid polluting git and compile them with the
 correct compiler flags.
-
