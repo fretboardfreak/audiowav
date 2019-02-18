@@ -1,12 +1,19 @@
 #ifndef WAVEGEN_HPP
 #define WAVEGEN_HPP
 
-#include <iostream>
+#define DEFAULT_FRAMERATE 44100
+
+int secondsToFrames(float /*seconds*/, int /*framerate*/);
+float framesToSeconds(int /*frameCount*/, int /*framerate*/);
 
 class WaveGenerator {
-  int freq;
+  int freq, framerate;
 public:
-  int genSamples(int, int);
+  int genFrames(float /*frequency*/, int /*count*/);
+private:
+  float sinusoidAngle(int /*frame*/, float /*frequency*/);
+  float sinusoidValue(int /*frame*/, float /*frequency*/);
 };
+
 
 #endif
