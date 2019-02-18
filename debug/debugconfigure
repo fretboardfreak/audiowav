@@ -8,7 +8,4 @@
 # See http://stackoverflow.com/questions/4553735/gnu-autotools-debug-release-targets
 # and http://stackoverflow.com/questions/11647208/where-to-add-a-cflag-such-as-std-gnu99-into-an-autotools-project
 
-source ../common_flags.sh
-
-../configure CPPFLAGS=-DDEBUG CXXFLAGS="-g -O0 $COMPILER_FLAGS"
-
+./configure CPPFLAGS=-DDEBUG CXXFLAGS="-g -O0"
