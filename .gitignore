@@ -1,3 +1,13 @@
+# Binaries
+/audiowav
+/tests/wavegen
+
+# Test results
+/tests/*.log
+/tests/*.trs
+test-suite.log
+
+
 # Ignore everything that is created by running autoreconf, configure.ac or make.
 
 # No leading slash means ignore these FILES no matter in which directory they
@@ -12,6 +22,7 @@
 *.stackdump
 Makefile
 !/google-test/make/Makefile
+google-test/make/sample1_unittest
 Makefile.in
 TAGS
 aclocal.m4
@@ -32,9 +43,3 @@ test-driver
 # Ditto, but trailing slash means this is a DIRECTORY.
 .deps/
 autom4te.cache/
-
-# A leading slash means "relative to the root only".
-/debug/**
-!/debug/debugconfigure
-
-
