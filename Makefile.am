@@ -34,3 +34,4 @@ tests_wavegen_SOURCES = tests/wavegen_test.cpp \
 	src/wavegen.cpp
 tests_wavegen_CPPFLAGS = $(TEST_FLAGS)
 tests_wavegen_LDADD =  $(TEST_LIBS)
+tests_wavegen_LDFLAGS = -pthread
