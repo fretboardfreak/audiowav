@@ -18,16 +18,20 @@
 
 #define DEFAULT_FRAMERATE 44100
 
-int secondsToFrames(float /*seconds*/, int /*framerate*/);
-float framesToSeconds(int /*frameCount*/, int /*framerate*/);
+/* Calculate number of frames given sample length in seconds. */
+int seconds_to_frames(float /*seconds*/, int /*framerate*/);
+/* Calculate length of sample given the framecount and framerate. */
+float frames_to_seconds(int /*frame_count*/, int /*framerate*/);
 
 class WaveGenerator {
-  int freq, framerate;
+  int framerate;
 public:
-  int genFrames(float /*frequency*/, int /*count*/);
-private:
-  float sinusoidAngle(int /*frame*/, float /*frequency*/);
-  float sinusoidValue(int /*frame*/, float /*frequency*/);
+  void constant(int /*frequency*/, float* /*channel*/, int /*frame_count*/);
+protected:
+  /* Calculate the sinusoid phase angle for a given frame and frequency. */
+  float sinusoid_angle(int /*frame*/, float /*frequency*/);
+  /* Calculate the value of a sinusoid wave at given frame and frequency. */
+  float sinusoid_value(int /*frame*/, float /*frequency*/);
 };
 
 
