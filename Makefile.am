@@ -1,6 +1,6 @@
 # Always set this so that we can just '#include "foo.hpp"' from anywhere,
 # including our tests directory.
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src -std=c++11
 
 # This is the top-level Makefile.am for a non-recursive Autotools setup. In
 # fact, in non-recursive structures, this is the only Makefile.am that is
