@@ -20,10 +20,11 @@
 #include "wavegen.hpp"
 
 void parse_cmd_line(int argc, char **argv){
-  log(L_DEBUG, "parse_cmd_line not implemented: %d args found\n" , argc);
+  log(L_ERROR, "parse_cmd_line not implemented: %d args found\n" , argc);
 }
 
 int main(int argc, char **argv){
+  L_PREFIXES[L_INFO] = "";
   log(L_INFO, "Audiowav\n");
   parse_cmd_line(argc, argv);
   return 0;
