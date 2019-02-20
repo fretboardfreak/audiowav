@@ -15,17 +15,56 @@
  */
 #include <iostream>
 #include <getopt.h>
+#include <sysexits.h>
 
 #include "logging.hpp"
 #include "wavegen.hpp"
 
-void parse_cmd_line(int argc, char **argv){
-  log(L_ERROR, "parse_cmd_line not implemented: %d args found\n" , argc);
+void usage(void) {
+  std::cerr << "audiowav [-h|--help] [-v|--verbose] [-q|--quiet]\n"
+    << "  -h|--help : Print this help message.\n"
+    << "  -v|--verbose : Increase logging verbosity.\n"
+    << "  -q|--quiet : Decrease logging verbosity.\n"
+    << std::endl;
+}
+
+int parse_cmd_line(int argc, char **argv){
+  static struct option longopts[] = {
+    {"help", no_argument, NULL, 'h'},
+    {"verbose", no_argument, NULL, 'v'},
+    {"quiet", no_argument, NULL, 'q'}
+  };
+  int ch;
+  while ((ch = getopt_long(argc, argv, "vqh", longopts, NULL)) != -1) {
+    switch (ch) {
+      case 'h':
+        usage();
+        return EX_USAGE;
+      case 'v':
+        log(L_ERROR, "Increasing verbosity...\n");
+        VERBOSITY++;
+        break;
+      case 'q':
+        log(L_ERROR, "Decreasing verbosity...\n");
+        VERBOSITY--;
+        break;
+      default:
+        usage();
+        return EX_USAGE;
+    };
+    log(L_ERROR, "  verbosity = %d\n", VERBOSITY);
+  };
+  return EX_OK;
 }
 
 int main(int argc, char **argv){
+  // Set up logging to not prefix INFO messages
   L_PREFIXES[L_INFO] = "";
+
+  int parse_result = parse_cmd_line(argc, argv);
+  if (parse_result != EX_OK)
+    return parse_result;
+
   log(L_INFO, "Audiowav\n");
-  parse_cmd_line(argc, argv);
-  return 0;
+  return EX_OK;
 }
