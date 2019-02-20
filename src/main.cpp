@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "wavegen.hpp"
 #include <iostream>
+#include <getopt.h>
+
+#include "logging.hpp"
+#include "wavegen.hpp"
+
+void parse_cmd_line(int argc, char **argv){
+  log(L_DEBUG, "parse_cmd_line not implemented: %d args found\n" , argc);
+}
 
 int main(int argc, char **argv){
-    std::cout << "audiowav" << std::endl;
-
-#ifdef DEBUG
-    std::cout << "I was compiled with DEBUG defined." << std::endl;
-#endif
-
-    return 0;
+  log(L_INFO, "Audiowav\n");
+  parse_cmd_line(argc, argv);
+  return 0;
 }

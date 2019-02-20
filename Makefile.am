@@ -11,7 +11,8 @@ bin_PROGRAMS = audiowav
 audiowav_SOURCES = \
   src/main.cpp \
   src/wavegen.hpp \
-	src/wavegen.cpp
+	src/wavegen.cpp \
+	src/logging.hpp
 
 # To specify extra flags for each target you can do this.
 # But it is better to pass them on the command line (using a custom script to
@@ -31,7 +32,8 @@ check_PROGRAMS = $(THE_TESTS)
 
 tests_wavegen_SOURCES = tests/wavegen_test.cpp \
 	src/wavegen.hpp \
-	src/wavegen.cpp
+	src/wavegen.cpp \
+	src/logging.hpp
 tests_wavegen_CPPFLAGS = $(TEST_FLAGS)
 tests_wavegen_LDADD =  $(TEST_LIBS)
 tests_wavegen_LDFLAGS = -pthread
