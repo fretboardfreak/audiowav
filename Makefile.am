@@ -1,11 +1,10 @@
-# Always set this so that we can just '#include "foo.hpp"' from anywhere,
-# including our tests directory.
+# Automakefile for the audiowav project by Curtis Sand.
+# https://bitbucket.org/fret/audiowav.git
+
+# Always set this so that we can just '#include "SRCFILE"', for any SRCFILE
+# under the "src" dir, from anywhere, including our tests directory.
 AM_CPPFLAGS = -I$(top_srcdir)/src -std=c++11
 
-# This is the top-level Makefile.am for a non-recursive Autotools setup. In
-# fact, in non-recursive structures, this is the only Makefile.am that is
-# needed. The programs (just foo.exe in this case) will be left in the top-level
-# directory.
 bin_PROGRAMS = audiowav
 
 audiowav_SOURCES = \
@@ -14,12 +13,8 @@ audiowav_SOURCES = \
 	src/wavegen.cpp \
 	src/logging.hpp
 
-# To specify extra flags for each target you can do this.
-# But it is better to pass them on the command line (using a custom script to
-# make the process easier; see the example in the debug folder). Doing it that
-# way ensures the core build system stays free of cruft that may not port to
-# other machines or compilers.
-#audiowav_CXXFLAGS = -pedantic
+audiowav_CXXFlags = $$(pkg-config --cflags sndfile)
+audiowav_LDFLAGS = $$(pkg-config --libs sndfile)
 
 # Testing setup. Type 'make check' or 'make recheck' to run the tests.
 # TESTS defines a list of tests to run. Define their sources in the usual way.
