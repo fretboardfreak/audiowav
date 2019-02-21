@@ -16,6 +16,7 @@
 #include <iostream>
 #include <getopt.h>
 #include <sysexits.h>
+#include <sndfile.hh>
 
 #include "logging.hpp"
 #include "wavegen.hpp"
@@ -39,13 +40,12 @@ int parse_cmd_line(int argc, char **argv){
     switch (ch) {
       case 'h':
         usage();
+        // not really an error, but EX_USAGE signals the app should exit
         return EX_USAGE;
       case 'v':
-        log(L_ERROR, "Increasing verbosity...\n");
         VERBOSITY++;
         break;
       case 'q':
-        log(L_ERROR, "Decreasing verbosity...\n");
         VERBOSITY--;
         break;
       default:
@@ -54,6 +54,25 @@ int parse_cmd_line(int argc, char **argv){
     };
     log(L_ERROR, "  verbosity = %d\n", VERBOSITY);
   };
+  return EX_OK;
+}
+
+/* Temp method for testing libsndfile support. */
+int create_empty_test_file(const char *fname){
+  static int buffer_len = 1024;
+  static float buffer[1024]; // using values between -1.0, 1.0
+
+	SndfileHandle file;
+	int channels = 1;
+	int srate = DEFAULT_FRAMERATE;
+
+	log(L_INFO, "Creating file named '%s'\n", fname);
+	file = SndfileHandle(fname, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+                       channels, srate);
+	memset(buffer, 0, sizeof(buffer));
+	file.write(buffer, buffer_len);
+
+  // SndfileHandle destructor called when object out of scope
   return EX_OK;
 }
 
@@ -66,5 +85,6 @@ int main(int argc, char **argv){
     return parse_result;
 
   log(L_INFO, "Audiowav\n");
-  return EX_OK;
+
+  return create_empty_test_file("test.wav");
 }
