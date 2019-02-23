@@ -25,23 +25,32 @@ int seconds_to_frames(float seconds, int framerate);
 /* Calculate length of sample given the framecount and framerate. */
 float frames_to_seconds(int frame_count, int framerate);
 
+/* WaveGenerator : generate a continuous waveform using phasor math. */
 class WaveGenerator {
 public:
   /* Constructor */
-  WaveGenerator(int framerate, int fade_percentage);
-  /* Generate a waveform at a constant frequency. */
-  void constant(int frequency, float *channel, int frame_count);
-  /* Generate a waveform of linearly changeng frequency.
-   * note: only end frequency is needed because current fruency is the start.*/
-  void linear(int end_frequency, float *channel, int frame_count);
+  WaveGenerator(void);
   /* Reset the WaveGenerator to start a new waveform.*/
-  bool reset(void);
+  void reset(void);
+  /* Generate a waveform at a constant frequency. */
+  void constant(float frequency, float *channel, int framecount);
+  /* Generate a waveform of linearly changeng frequency.
+   * note: only end frequency is needed because current fruency is the start.
+   *       if linear is first call after reset/initialization, must manually
+   *       set frequency member.
+   */
+  // void linear(int end_frequency, float *channel, int framecount);
 protected:
-  int fade_percentage, framerate, last_phase;
+  const float phasor_amplitude;
+  const int framerate;
+  int generated_frames;
+  float last_phase, frequency, last_frequency;
   /* Calculate the sinusoid phase angle for a given frame and frequency. */
-  float sinusoid_angle(int frame, float frequency);
-  /* Calculate the value of a sinusoid wave at given frame and frequency. */
-  float sinusoid_value(int frame, float frequency);
+  float angle(int frame, float frequency);
+  /* Build a phasor from given frame and phase. */
+  std::complex<float> phasor(int frame, float phase);
+  /* Calculate the new phase when the frequency changes. */
+  float correct_phase(void);
 };
 
 

@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "wavegen.hpp"
 #include <iostream>
+#include <complex>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+
+#include "logging.hpp"
+#include "wavegen.hpp"
 
 /* Calculate number of frames given sample length in seconds.
  * frames = framerate * seconds = (frames / seconds) * seconds */
@@ -32,28 +35,67 @@ float frames_to_seconds(int framecount, int framerate){
 }
 
 
-WaveGenerator::WaveGenerator(int framerate, int fade_percentage){}
-
-/* Generate a waveform at a constant frequency. */
-void WaveGenerator::constant(int frequency, float *channel, int frame_count){
-}
-
-/* Generate a waveform of linearly changeng frequency.
- * note: only end frequency is needed because current fruency is the start.*/
-void WaveGenerator::linear(int end_frequency, float *channel, int frame_count){
-}
+/* WaveGenerator Constructor */
+WaveGenerator::WaveGenerator(void): phasor_amplitude(1.0),
+                                    framerate(DEFAULT_FRAMERATE),
+                                    generated_frames(0),
+                                    last_phase(0),
+                                    frequency(0),
+                                    last_frequency(0)
+{}
 
 /* Reset the WaveGenerator to start a new waveform.*/
-bool WaveGenerator::reset(void){
-  return true;
+void WaveGenerator::reset(void){
+  this->frequency = 0;
+  this->last_frequency = 0;
+  this->last_phase = 0;
+  this->generated_frames = 0;
 }
 
 /* Calculate the sinusoid phase angle for a given frame and frequency. */
-float WaveGenerator::sinusoid_angle(int frame, float frequency){
-  return 0;
+float WaveGenerator::angle(int frame, float frequency){
+  return 2.0 * M_PI * frequency * (float) frame / (float) this->framerate;
 }
 
-/* Calculate the value of a sinusoid wave at given frame and frequency. */
-float WaveGenerator::sinusoid_value(int frame, float frequency){
-  return 0;
+/* Build a phasor from given frame and phase. */
+std::complex<float> WaveGenerator::phasor(int frame, float phase){
+  return std::polar(this->phasor_amplitude,
+                    this->angle(frame, this->frequency) + phase);
+}
+
+/* Calculate the new phase when the frequency changes.
+ *
+ * Conceptually, this shifts the generated waveform in the new frequency so
+ * that the waveform matches the value of the previously generated waveform of
+ * the old frequency.
+ * | /-\     /-\|            -/--\-   |
+ * |/   \   /   |-\-      -/-      -\-|
+ * |     \-/    |   -\--/-            |
+ * vs
+ * | /-\     /-\|      -/--\-         |
+ * |/   \   /   |   -/-      -\-      |
+ * |     \-/    |-/-            -\--/-|
+ */
+float WaveGenerator::correct_phase(void){
+  log(L_WARNING, "WaveGenerator::correct_phase() not implemented.");
+  return this->last_phase;
+}
+
+/* Generate a waveform at a constant frequency. */
+void WaveGenerator::constant(float frequency, float *channel, int framecount){
+  this->frequency = frequency;
+  float phase;
+  if (this->frequency != this->last_frequency)
+    phase = this->correct_phase();
+  else
+    phase = this->last_phase;
+  int frame;
+  std::complex<float> phasor;
+  for (frame=0; frame <= framecount; frame++) {
+    phasor = this->phasor(this->generated_frames + 1 + frame, phase);
+    channel[frame] = phasor.real();
+  }
+  this->generated_frames += frame;
+  this->last_phase = std::arg(phasor);
+  this->last_frequency = this->frequency;
 }
