@@ -3,7 +3,7 @@
 
 # Always set this so that we can just '#include "SRCFILE"', for any SRCFILE
 # under the "src" dir, from anywhere, including our tests directory.
-AM_CPPFLAGS = -I$(top_srcdir)/src -std=c++11
+AM_CPPFLAGS = -I$(top_srcdir)/src -std=c++17
 
 bin_PROGRAMS = audiowav
 
