@@ -1,5 +1,3 @@
-#ifndef LOGGING_HPP
-#define LOGGING_HPP
 /*
  * Copyright 2019 Curtis Sand
  *
@@ -15,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#ifndef LOGGING_HPP
+#define LOGGING_HPP
 /*
  * logging.hpp : Library providing app wide log verbosity support.
  */
@@ -34,13 +33,13 @@
 #define L_ERROR 0
 
 #ifdef DEBUG
-int VERBOSITY = L_DEBUG;
+inline int VERBOSITY = L_DEBUG;
 #else
-int VERBOSITY = L_INFO;
+inline int VERBOSITY = L_INFO;
 #endif
 
 // Prefixes to be appended to log messages
-std::map<int,std::string> L_PREFIXES = {
+inline std::map<int,std::string> L_PREFIXES = {
   {L_ERROR, "ERR: "},
   {L_WARNING, "WRN: "},
   {L_INFO, "INF: "},
