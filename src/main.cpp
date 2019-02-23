@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cstring>
 #include <iostream>
 #include <getopt.h>
 #include <sysexits.h>
@@ -21,22 +22,26 @@
 #include "logging.hpp"
 #include "wavegen.hpp"
 
-void usage(void) {
+void usage(void){
   std::cerr << "audiowav [-h|--help] [-v|--verbose] [-q|--quiet]\n"
     << "  -h|--help : Print this help message.\n"
     << "  -v|--verbose : Increase logging verbosity.\n"
     << "  -q|--quiet : Decrease logging verbosity.\n"
-    << std::endl;
+    << "  -o|--output-file : Path of the output file. [default: test.wav]\n";
 }
 
-int parse_cmd_line(int argc, char **argv){
+int parse_cmd_line(int argc, char **argv, char *output){
   static struct option longopts[] = {
     {"help", no_argument, NULL, 'h'},
     {"verbose", no_argument, NULL, 'v'},
-    {"quiet", no_argument, NULL, 'q'}
+    {"quiet", no_argument, NULL, 'q'},
+    {"output-file", required_argument, NULL, 'o'}
   };
+  // set defaults
+  strcpy(output, "test.wav");
+
   int ch;
-  while ((ch = getopt_long(argc, argv, "vqh", longopts, NULL)) != -1) {
+  while ((ch = getopt_long(argc, argv, "vqho:", longopts, NULL)) != -1) {
     switch (ch) {
       case 'h':
         usage();
@@ -48,11 +53,13 @@ int parse_cmd_line(int argc, char **argv){
       case 'q':
         VERBOSITY--;
         break;
+      case 'o':
+        strcpy(output, optarg);
+        break;
       default:
         usage();
         return EX_USAGE;
     };
-    log(L_ERROR, "  verbosity = %d\n", VERBOSITY);
   };
   return EX_OK;
 }
@@ -80,11 +87,13 @@ int main(int argc, char **argv){
   // Set up logging to not prefix INFO messages
   L_PREFIXES[L_INFO] = "";
 
-  int parse_result = parse_cmd_line(argc, argv);
+  char output[1024];
+
+  int parse_result = parse_cmd_line(argc, argv, output);
   if (parse_result != EX_OK)
     return parse_result;
 
   log(L_INFO, "Audiowav\n");
 
-  return create_empty_test_file("test.wav");
+  return create_empty_test_file(output);
 }
