@@ -71,13 +71,26 @@ int create_empty_test_file(const char *fname){
 
 	SndfileHandle file;
 	int channels = 1;
-	int srate = DEFAULT_FRAMERATE;
+	int srate = DEFAULT_FRAMERATE; // srate for sample rate
 
 	log(L_INFO, "Creating file named '%s'\n", fname);
 	file = SndfileHandle(fname, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
                        channels, srate);
 	memset(buffer, 0, sizeof(buffer));
-	file.write(buffer, buffer_len);
+
+  float silence_len = 5.0; // seconds
+  int silence_frames = seconds_to_frames(silence_len, srate);
+  int remaining_frames = silence_frames;
+
+  while (remaining_frames > 0) {
+    if (remaining_frames >= buffer_len) {
+      file.write(buffer, buffer_len);
+      remaining_frames = remaining_frames - buffer_len;
+    } else {
+      file.write(buffer, remaining_frames);
+      remaining_frames = 0;
+    }
+  }
 
   // SndfileHandle destructor called when object out of scope
   return EX_OK;
