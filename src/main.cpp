@@ -65,7 +65,7 @@ int parse_cmd_line(int argc, char **argv, char *output){
 }
 
 /* Temp method for testing libsndfile support. */
-int create_empty_test_file(const char *fname){
+int create_test_file(const char *fname){
   static int buffer_len = 1024;
   static float buffer[1024]; // using values between -1.0, 1.0
 
@@ -78,18 +78,29 @@ int create_empty_test_file(const char *fname){
                        channels, srate);
 	memset(buffer, 0, sizeof(buffer));
 
-  float silence_len = 5.0; // seconds
-  int silence_frames = seconds_to_frames(silence_len, srate);
-  int remaining_frames = silence_frames;
+  float tone_len = 1.0; // seconds
+  int tone_frames = seconds_to_frames(tone_len, srate);
 
-  while (remaining_frames > 0) {
-    if (remaining_frames >= buffer_len) {
-      file.write(buffer, buffer_len);
-      remaining_frames = remaining_frames - buffer_len;
-    } else {
-      file.write(buffer, remaining_frames);
-      remaining_frames = 0;
+  WaveGenerator generator = WaveGenerator();
+
+  float frequency = 440.0;
+
+  int tones = 5;
+  while (tones > 0) {
+    int remaining_frames = tone_frames;
+    while (remaining_frames > 0) {
+      if (remaining_frames >= buffer_len) {
+        generator.constant(frequency, buffer, buffer_len);
+        file.write(buffer, buffer_len);
+        remaining_frames -= buffer_len;
+      } else {
+        generator.constant(frequency, buffer, remaining_frames);
+        file.write(buffer, remaining_frames);
+        remaining_frames = 0;
+      }
     }
+    tones--;
+    frequency *= 1.33;
   }
 
   // SndfileHandle destructor called when object out of scope
@@ -108,5 +119,5 @@ int main(int argc, char **argv){
 
   log(L_INFO, "Audiowav\n");
 
-  return create_empty_test_file(output);
+  return create_test_file(output);
 }
