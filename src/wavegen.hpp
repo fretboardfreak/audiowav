@@ -41,16 +41,12 @@ public:
    */
   // void linear(int end_frequency, float *channel, int framecount);
 protected:
-  const float phasor_amplitude;
+  const float amplitude;
   const int framerate;
   int generated_frames;
   float last_phase, frequency, last_frequency;
   /* Calculate the sinusoid phase angle for a given frame and frequency. */
   float angle(int frame, float frequency);
-  /* Build a phasor from given frame and phase. */
-  std::complex<float> phasor(int frame, float phase);
-  /* Calculate the new phase when the frequency changes. */
-  float correct_phase(void);
 };
 
 

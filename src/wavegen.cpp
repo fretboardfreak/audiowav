@@ -36,12 +36,12 @@ float frames_to_seconds(int framecount, int framerate){
 
 
 /* WaveGenerator Constructor */
-WaveGenerator::WaveGenerator(void): phasor_amplitude(1.0),
+WaveGenerator::WaveGenerator(void): amplitude(1.0),
                                     framerate(DEFAULT_FRAMERATE),
                                     generated_frames(0),
                                     last_phase(0),
                                     frequency(0),
-                                    last_frequency(0)
+                                    last_frequency(0),
 {}
 
 /* Reset the WaveGenerator to start a new waveform.*/
@@ -57,45 +57,28 @@ float WaveGenerator::angle(int frame, float frequency){
   return 2.0 * M_PI * frequency * (float) frame / (float) this->framerate;
 }
 
-/* Build a phasor from given frame and phase. */
-std::complex<float> WaveGenerator::phasor(int frame, float phase){
-  return std::polar(this->phasor_amplitude,
-                    this->angle(frame, this->frequency) + phase);
-}
-
-/* Calculate the new phase when the frequency changes.
- *
- * Conceptually, this shifts the generated waveform in the new frequency so
- * that the waveform matches the value of the previously generated waveform of
- * the old frequency.
- * | /-\     /-\|            -/--\-   |
- * |/   \   /   |-\-      -/-      -\-|
- * |     \-/    |   -\--/-            |
- * vs
- * | /-\     /-\|      -/--\-         |
- * |/   \   /   |   -/-      -\-      |
- * |     \-/    |-/-            -\--/-|
- */
-float WaveGenerator::correct_phase(void){
-  log(L_WARNING, "WaveGenerator::correct_phase() not implemented.");
-  return this->last_phase;
-}
-
 /* Generate a waveform at a constant frequency. */
 void WaveGenerator::constant(float frequency, float *channel, int framecount){
+  log(L_DEBUG, "frequency: %f\n", frequency);
   this->frequency = frequency;
   float phase;
-  if (this->frequency != this->last_frequency)
-    phase = this->correct_phase();
-  else
+  if (this->frequency != this->last_frequency && this->last_frequency != 0) {
+    // calculate phase correction for change in frequency
+    float curr = this->angle(this->generated_frames, this->last_frequency) + this->last_phase;
+    float next = this->angle(this->generated_frames, this->frequency);
+    phase = curr - next;
+    log(L_DEBUG, "    cur %f : next %f\n", curr, next);
+  } else
     phase = this->last_phase;
+  log(L_DEBUG, "  phase: %f\n", phase);
   int frame;
-  std::complex<float> phasor;
   for (frame=0; frame <= framecount; frame++) {
-    phasor = this->phasor(this->generated_frames + 1 + frame, phase);
-    channel[frame] = phasor.real();
+    float value = std::sin(this->angle(this->generated_frames + frame + 1, this->frequency) + phase);
+    channel[frame] = value * this->amplitude;
+    if(frame <= 5 || frame >= framecount - 5)
+      log(L_DEBUG, "frame %d: %f\n", this->generated_frames + frame + 1, value);
   }
   this->generated_frames += frame;
-  this->last_phase = std::arg(phasor);
   this->last_frequency = this->frequency;
+  this->last_phase = phase;
 }
