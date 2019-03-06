@@ -34,14 +34,13 @@ float frames_to_seconds(int framecount, int framerate){
   return (float) framecount / (float) framerate;
 }
 
-
 /* WaveGenerator Constructor */
 WaveGenerator::WaveGenerator(void): amplitude(1.0),
                                     framerate(DEFAULT_FRAMERATE),
                                     generated_frames(0),
                                     last_phase(0),
                                     frequency(0),
-                                    last_frequency(0),
+                                    last_frequency(0)
 {}
 
 /* Reset the WaveGenerator to start a new waveform.*/
