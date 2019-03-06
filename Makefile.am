@@ -11,7 +11,9 @@ audiowav_SOURCES = \
   src/main.cpp \
   src/wavegen.hpp \
 	src/wavegen.cpp \
-	src/logging.hpp
+	src/logging.hpp \
+	src/util.hpp \
+	src/util.cpp
 
 audiowav_CXXFlags = $$(pkg-config --cflags sndfile)
 audiowav_LDFLAGS = $$(pkg-config --libs sndfile)
