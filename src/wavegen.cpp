@@ -20,19 +20,8 @@
 #include <cmath>
 
 #include "logging.hpp"
+#include "dsound.hpp"
 #include "wavegen.hpp"
-
-/* Calculate number of frames given sample length in seconds.
- * frames = framerate * seconds = (frames / seconds) * seconds */
-int seconds_to_frames(float seconds, int framerate){
-  return (int) floor(framerate * seconds);
-}
-
-/* Calculate length of sample given the framecount and framerate.
- * seconds = framecount / framerate = (frames) / (frames / seconds) */
-float frames_to_seconds(int framecount, int framerate){
-  return (float) framecount / (float) framerate;
-}
 
 /* WaveGenerator Constructor */
 WaveGenerator::WaveGenerator(void): amplitude(1.0),

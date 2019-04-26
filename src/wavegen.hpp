@@ -18,13 +18,6 @@
 
 #include <complex>
 
-#define DEFAULT_FRAMERATE 44100
-
-/* Calculate number of frames given sample length in seconds. */
-int seconds_to_frames(float seconds, int framerate);
-/* Calculate length of sample given the framecount and framerate. */
-float frames_to_seconds(int frame_count, int framerate);
-
 /* WaveGenerator : generate a continuous waveform using phasor math. */
 class WaveGenerator {
 public:

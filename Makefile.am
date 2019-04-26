@@ -12,6 +12,8 @@ audiowav_SOURCES = \
   src/wavegen.hpp \
 	src/wavegen.cpp \
 	src/logging.hpp \
+	src/dsound.hpp \
+	src/dsound.cpp \
 	src/util.hpp \
 	src/util.cpp
 
@@ -27,18 +29,25 @@ THE_TESTS = tests/wavegen tests/util
 TESTS = $(THE_TESTS)
 check_PROGRAMS = $(THE_TESTS)
 
+
 tests_wavegen_SOURCES = tests/wavegen_test.cpp \
-	src/wavegen.hpp \
+  src/wavegen.hpp \
 	src/wavegen.cpp \
-	src/logging.hpp
+	src/logging.hpp \
+	src/dsound.hpp \
+	src/dsound.cpp
+
 tests_wavegen_CPPFLAGS = $(TEST_FLAGS)
 tests_wavegen_LDADD =  $(TEST_LIBS)
 tests_wavegen_LDFLAGS = -pthread
 
 tests_util_SOURCES = tests/util_test.cpp \
-	src/util.hpp \
-	src/util.cpp \
-	src/logging.hpp
+  src/wavegen.hpp \
+	src/wavegen.cpp \
+	src/logging.hpp \
+	src/dsound.hpp \
+	src/dsound.cpp
+
 tests_util_CPPFLAGS = $(TEST_FLAGS)
 tests_util_LDADD =  $(TEST_LIBS)
 tests_util_LDFLAGS = -pthread

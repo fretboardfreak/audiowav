@@ -15,10 +15,9 @@
  */
 
 #include <cmath>
-// enable if max_diff defined using std::numeric_limits
-// #include <limits>
 
 #include "logging.hpp"
+
 
 /* Test whether float A is close enough to float B to call them equal. */
 bool is_close(float A, float B){

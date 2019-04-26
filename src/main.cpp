@@ -20,6 +20,7 @@
 #include <sndfile.hh>
 
 #include "logging.hpp"
+#include "dsound.hpp"
 #include "wavegen.hpp"
 
 void usage(void){
