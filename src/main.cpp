@@ -17,7 +17,6 @@
 #include <iostream>
 #include <getopt.h>
 #include <sysexits.h>
-#include <sndfile.hh>
 
 #include "logging.hpp"
 #include "dsound.hpp"
@@ -28,21 +27,24 @@ void usage(void){
     << "  -h|--help : Print this help message.\n"
     << "  -v|--verbose : Increase logging verbosity.\n"
     << "  -q|--quiet : Decrease logging verbosity.\n"
-    << "  -o|--output-file : Path of the output file. [default: test.wav]\n";
+    << "  -o|--output-file : Path of the output file. [default: test.wav]\n"
+    << "  -w|--wavegen-test : Create test file using WaveGenerator class.\n";
 }
 
-int parse_cmd_line(int argc, char **argv, char *output){
+int parse_cmd_line(int argc, char **argv, char *output, bool *wavegen_test){
   static struct option longopts[] = {
     {"help", no_argument, NULL, 'h'},
     {"verbose", no_argument, NULL, 'v'},
     {"quiet", no_argument, NULL, 'q'},
-    {"output-file", required_argument, NULL, 'o'}
+    {"output-file", required_argument, NULL, 'o'},
+    {"wavegen-test", no_argument, NULL, 'w'}
   };
   // set defaults
   strcpy(output, "test.wav");
+  *wavegen_test = false;
 
   int ch;
-  while ((ch = getopt_long(argc, argv, "vqho:", longopts, NULL)) != -1) {
+  while ((ch = getopt_long(argc, argv, "vqho:w", longopts, NULL)) != -1) {
     switch (ch) {
       case 'h':
         usage();
@@ -57,6 +59,9 @@ int parse_cmd_line(int argc, char **argv, char *output){
       case 'o':
         strcpy(output, optarg);
         break;
+      case 'w':
+        *wavegen_test = true;
+        break;
       default:
         usage();
         return EX_USAGE;
@@ -65,60 +70,23 @@ int parse_cmd_line(int argc, char **argv, char *output){
   return EX_OK;
 }
 
-/* Temp method for testing libsndfile support. */
-int create_test_file(const char *fname){
-  static int buffer_len = 1024;
-  static float buffer[1024]; // using values between -1.0, 1.0
-
-	SndfileHandle file;
-	int channels = 1;
-	int srate = DEFAULT_FRAMERATE; // srate for sample rate
-
-	log(L_INFO, "Creating file named '%s'\n", fname);
-	file = SndfileHandle(fname, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
-                       channels, srate);
-	memset(buffer, 0, sizeof(buffer));
-
-  float tone_len = 1.0; // seconds
-  int tone_frames = seconds_to_frames(tone_len, srate);
-
-  WaveGenerator generator = WaveGenerator();
-
-  float frequency = 440.0;
-
-  int tones = 5;
-  while (tones > 0) {
-    int remaining_frames = tone_frames;
-    while (remaining_frames > 0) {
-      if (remaining_frames >= buffer_len) {
-        generator.constant(frequency, buffer, buffer_len);
-        file.write(buffer, buffer_len);
-        remaining_frames -= buffer_len;
-      } else {
-        generator.constant(frequency, buffer, remaining_frames);
-        file.write(buffer, remaining_frames);
-        remaining_frames = 0;
-      }
-    }
-    tones--;
-    frequency *= 1.33;
-  }
-
-  // SndfileHandle destructor called when object out of scope
-  return EX_OK;
-}
-
 int main(int argc, char **argv){
   // Set up logging to not prefix INFO messages
   L_PREFIXES[L_INFO] = "";
 
+  bool wavegen_test;
   char output[1024];
 
-  int parse_result = parse_cmd_line(argc, argv, output);
+  int parse_result = parse_cmd_line(argc, argv, output, &wavegen_test);
   if (parse_result != EX_OK)
     return parse_result;
 
   log(L_INFO, "Audiowav\n");
 
-  return create_test_file(output);
+  if (wavegen_test) {
+    return create_wavegen_test_file(output);
+  } else {
+    log(L_INFO, "No specified job.\n");
+    return EX_OK;
+  }
 }

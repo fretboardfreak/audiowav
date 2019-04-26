@@ -15,13 +15,60 @@
  */
 #include <iostream>
 #include <complex>
+#include <cstring>
+#include <sysexits.h>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+#include <sndfile.hh>
+
 #include "logging.hpp"
 #include "dsound.hpp"
 #include "wavegen.hpp"
+
+/* Test method to create a file using continuous WaveGenerator. */
+int create_wavegen_test_file(const char *fname){
+  static int buffer_len = 1024;
+  static float buffer[1024]; // using values between -1.0, 1.0
+
+	SndfileHandle file;
+	int channels = 1;
+	int srate = DEFAULT_FRAMERATE; // srate for sample rate
+
+	log(L_INFO, "Creating file named '%s'\n", fname);
+	file = SndfileHandle(fname, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+                       channels, srate);
+	memset(buffer, 0, sizeof(buffer));
+
+  float tone_len = 1.0; // seconds
+  int tone_frames = seconds_to_frames(tone_len, srate);
+
+  WaveGenerator generator = WaveGenerator();
+
+  float frequency = 440.0;
+
+  int tones = 5;
+  while (tones > 0) {
+    int remaining_frames = tone_frames;
+    while (remaining_frames > 0) {
+      if (remaining_frames >= buffer_len) {
+        generator.constant(frequency, buffer, buffer_len);
+        file.write(buffer, buffer_len);
+        remaining_frames -= buffer_len;
+      } else {
+        generator.constant(frequency, buffer, remaining_frames);
+        file.write(buffer, remaining_frames);
+        remaining_frames = 0;
+      }
+    }
+    tones--;
+    frequency *= 1.33;
+  }
+
+  // SndfileHandle destructor called when object out of scope
+  return EX_OK;
+}
 
 /* WaveGenerator Constructor */
 WaveGenerator::WaveGenerator(void): amplitude(1.0),

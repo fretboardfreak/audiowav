@@ -18,6 +18,9 @@
 
 #include <complex>
 
+/* Test method to create a file using continuous WaveGenerator. */
+int create_wavegen_test_file(const char *fname);
+
 /* WaveGenerator : generate a continuous waveform using phasor math. */
 class WaveGenerator {
 public:
